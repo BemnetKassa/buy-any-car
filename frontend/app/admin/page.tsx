@@ -1,20 +1,28 @@
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function AdminPage() {
-	// Placeholder state for form fields
+
 	const [model, setModel] = useState("");
 	const [price, setPrice] = useState("");
 	const [image, setImage] = useState("");
+	const router = useRouter();
 
-	// Placeholder submit handler
+	// Save car to localStorage and redirect to landing page
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		// Here you would send data to backend
-		alert(`Car added: ${model} - $${price}`);
+		const newCar = { model, price, image };
+		let cars = [];
+		if (typeof window !== "undefined") {
+			const stored = localStorage.getItem("cars");
+			cars = stored ? JSON.parse(stored) : [];
+			cars.push(newCar);
+			localStorage.setItem("cars", JSON.stringify(cars));
+		}
 		setModel("");
 		setPrice("");
 		setImage("");
+		router.push("/landingPage");
 	};
 
 	return (
