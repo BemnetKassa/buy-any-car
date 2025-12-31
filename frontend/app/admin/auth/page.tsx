@@ -1,5 +1,6 @@
+
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AdminLogin() {
@@ -8,17 +9,39 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  // Seed mock admin user in localStorage (run once)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const users = localStorage.getItem("admin-users");
+      if (!users) {
+        localStorage.setItem("admin-users", JSON.stringify([
+          { username: "admin", password: "admin123" }
+        ]));
+      }
+    }
+  }, []);
+
+  // Check credentials against seeded mock admin user
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple hardcoded check for demonstration
-    if (username === "admin" && password === "admin123") {
-      localStorage.setItem("admin-auth", "true");
-      router.push("/admin/dashboard");
+    if (username && password) {
+      let users = [];
+      if (typeof window !== "undefined") {
+        const stored = localStorage.getItem("admin-users");
+        users = stored ? JSON.parse(stored) : [];
+      }
+      const found = users.find((u: any) => u.username === username && u.password === password);
+      if (found) {
+        localStorage.setItem("admin-auth", "true");
+        localStorage.setItem("admin-username", username);
+        router.push("/admin/dashboard");
+      } else {
+        setError("Invalid username or password");
+      }
     } else {
-      setError("Invalid username or password");
+      setError("Please enter a username and password");
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow p-8">
