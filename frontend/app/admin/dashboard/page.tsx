@@ -10,13 +10,13 @@ export default function AdminDashboardPage() {
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
   const [type, setType] = useState("");
-  const [age, setAge] = useState("");
-  const [cars, setCars] = useState<Array<{ model: string; price: string; image: string; type?: string; age?: string }>>([]);
+  const [buildDate, setBuildDate] = useState("");
+  const [cars, setCars] = useState<Array<{ model: string; price: string; image: string; type?: string; buildDate?: string }>>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("");
   const [filterPrice, setFilterPrice] = useState<[number, number]>([0, 100000]);
-  const [filterAge, setFilterAge] = useState<[number, number]>([0, 30]);
+  const [filterBuildDate, setFilterBuildDate] = useState<[number, number]>([1990, new Date().getFullYear()]);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function AdminDashboardPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newCar = { model, price, image, type, age };
+    const newCar = { model, price, image, type, buildDate };
     const updatedCars = [...cars, newCar];
     setCars(updatedCars);
     if (typeof window !== "undefined") {
@@ -41,7 +41,7 @@ export default function AdminDashboardPage() {
     setPrice("");
     setImage("");
     setType("");
-    setAge("");
+    setBuildDate("");
   };
 
   // Filtering logic
@@ -54,10 +54,10 @@ export default function AdminDashboardPage() {
     const priceNum = Number(car.price);
     const matchesPrice =
       priceNum >= filterPrice[0] && priceNum <= filterPrice[1];
-    const ageNum = Number(car.age || 0);
-    const matchesAge =
-      ageNum >= filterAge[0] && ageNum <= filterAge[1];
-    return matchesSearch && matchesType && matchesPrice && matchesAge;
+    const buildDateNum = Number(car.buildDate || 0);
+    const matchesBuildDate =
+      buildDateNum >= filterBuildDate[0] && buildDateNum <= filterBuildDate[1];
+    return matchesSearch && matchesType && matchesPrice && matchesBuildDate;
   });
 
   return (
@@ -118,14 +118,14 @@ export default function AdminDashboardPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 dark:text-gray-200 mb-1">Age (years)</label>
+                  <label className="block text-gray-700 dark:text-gray-200 mb-1">Build Date (year)</label>
                   <input
                     type="number"
-                    value={age}
-                    onChange={e => setAge(e.target.value)}
+                    value={buildDate}
+                    onChange={e => setBuildDate(e.target.value)}
                     className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-gray-700 dark:text-white"
-                    min={0}
-                    max={30}
+                    min={1990}
+                    max={new Date().getFullYear()}
                     required
                   />
                 </div>
@@ -191,23 +191,23 @@ export default function AdminDashboardPage() {
                     />
                   </div>
                   <div className="flex items-center gap-2">
-                    <label className="text-gray-700 dark:text-gray-200">Age:</label>
+                    <label className="text-gray-700 dark:text-gray-200">Build Date:</label>
                     <input
                       type="number"
-                      min={0}
-                      max={30}
-                      value={filterAge[0]}
-                      onChange={e => setFilterAge([Number(e.target.value), filterAge[1]])}
-                      className="w-16 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
+                      min={1990}
+                      max={new Date().getFullYear()}
+                      value={filterBuildDate[0]}
+                      onChange={e => setFilterBuildDate([Number(e.target.value), filterBuildDate[1]])}
+                      className="w-24 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
                     />
                     <span>-</span>
                     <input
                       type="number"
-                      min={0}
-                      max={30}
-                      value={filterAge[1]}
-                      onChange={e => setFilterAge([filterAge[0], Number(e.target.value)])}
-                      className="w-16 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
+                      min={1990}
+                      max={new Date().getFullYear()}
+                      value={filterBuildDate[1]}
+                      onChange={e => setFilterBuildDate([filterBuildDate[0], Number(e.target.value)])}
+                      className="w-24 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                 </div>
@@ -228,7 +228,7 @@ export default function AdminDashboardPage() {
                       <div className="flex-1">
                         <div className="font-semibold text-lg">{car.model}</div>
                         <div className="text-sm text-gray-600 dark:text-gray-300">${car.price}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">{car.type} | {car.age} yrs</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{car.type} {car.buildDate && `| Built: ${car.buildDate}`}</div>
                       </div>
                     </li>
                   ))}

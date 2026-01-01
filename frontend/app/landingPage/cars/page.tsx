@@ -4,11 +4,11 @@ import LandingHeader from "../../components/landing/header";
 import LandingFooter from "../../components/landing/footer";
 
 export default function BrowseCarsPage() {
-  const [cars, setCars] = useState<Array<{ model: string; price: string; image: string; type?: string; age?: string }>>([]);
+  const [cars, setCars] = useState<Array<{ model: string; price: string; image: string; type?: string; buildDate?: string }>>([]);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("");
   const [filterPrice, setFilterPrice] = useState<[number, number]>([0, 100000]);
-  const [filterAge, setFilterAge] = useState<[number, number]>([0, 30]);
+  const [filterBuildDate, setFilterBuildDate] = useState<[number, number]>([1990, new Date().getFullYear()]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -26,10 +26,10 @@ export default function BrowseCarsPage() {
     const priceNum = Number(car.price);
     const matchesPrice =
       priceNum >= filterPrice[0] && priceNum <= filterPrice[1];
-    const ageNum = Number(car.age || 0);
-    const matchesAge =
-      ageNum >= filterAge[0] && ageNum <= filterAge[1];
-    return matchesSearch && matchesType && matchesPrice && matchesAge;
+    const buildDateNum = Number(car.buildDate || 0);
+    const matchesBuildDate =
+      buildDateNum >= filterBuildDate[0] && buildDateNum <= filterBuildDate[1];
+    return matchesSearch && matchesType && matchesPrice && matchesBuildDate;
   });
 
   return (
@@ -89,23 +89,23 @@ export default function BrowseCarsPage() {
               />
             </div>
             <div className="flex items-center gap-2">
-              <label className="text-gray-700 dark:text-gray-200">Age:</label>
+              <label className="text-gray-700 dark:text-gray-200">Build Date:</label>
               <input
                 type="number"
-                min={0}
-                max={30}
-                value={filterAge[0]}
-                onChange={e => setFilterAge([Number(e.target.value), filterAge[1]])}
-                className="w-16 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
+                min={1990}
+                max={new Date().getFullYear()}
+                value={filterBuildDate[0]}
+                onChange={e => setFilterBuildDate([Number(e.target.value), filterBuildDate[1]])}
+                className="w-24 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
               />
               <span>-</span>
               <input
                 type="number"
-                min={0}
-                max={30}
-                value={filterAge[1]}
-                onChange={e => setFilterAge([filterAge[0], Number(e.target.value)])}
-                className="w-16 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
+                min={1990}
+                max={new Date().getFullYear()}
+                value={filterBuildDate[1]}
+                onChange={e => setFilterBuildDate([filterBuildDate[0], Number(e.target.value)])}
+                className="w-24 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
               />
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function BrowseCarsPage() {
                 </div>
                 <h4 className="text-lg font-semibold mb-2 text-blue-700 dark:text-blue-300">{car.model}</h4>
                 <p className="text-gray-600 dark:text-gray-300 mb-2 text-base font-medium">${car.price}</p>
-                <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">{car.type} {car.age && `| ${car.age} yrs`}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">{car.type} {car.buildDate && `| Built: ${car.buildDate}`}</div>
                 <button className="mt-auto px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full font-semibold shadow hover:from-blue-600 hover:to-blue-800 transition">View Details</button>
               </div>
             ))
