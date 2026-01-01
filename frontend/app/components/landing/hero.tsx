@@ -3,12 +3,7 @@
 export default function LandingHero() {
 	return (
 		<section className="w-full flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl shadow mb-10 relative overflow-hidden min-h-[400px] bg-transparent">
-			<img
-				src="/app/components/pictures/cars.jpg"
-				alt="Cars background"
-				className="absolute inset-0 w-full h-full object-cover z-0"
-				style={{}}
-			/>
+			
 			<div className="relative z-10 w-full flex flex-col items-center justify-center">
 				<h1 className="text-5xl md:text-6xl font-extrabold text-blue-100 dark:text-blue-200 mb-4 drop-shadow-lg">Find Your Next Car</h1>
 				<p className="text-xl md:text-2xl text-blue-50 dark:text-blue-100 mb-8 max-w-2xl mx-auto drop-shadow">
