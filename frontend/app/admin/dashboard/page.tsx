@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import AdminSidebar from "../../components/admin/shared/sidebar";
 import AdminHeader from "../../components/admin/shared/header";
 
+export default function AdminDashboardPage() {
   const [model, setModel] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");

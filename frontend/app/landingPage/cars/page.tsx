@@ -33,7 +33,7 @@ export default function BrowseCarsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-200 dark:from-gray-900 dark:to-gray-800 font-sans flex flex-col">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 to-blue-200 dark:from-gray-900 dark:to-gray-800 font-sans flex flex-col">
       <LandingHeader />
       <main className="flex-1 max-w-5xl mx-auto px-6 py-16 flex flex-col items-center w-full">
         <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Browse Cars</h2>
