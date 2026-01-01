@@ -3,6 +3,7 @@
 import LandingHeader from "../../components/landing/header";
 import LandingFooter from "../../components/landing/footer";
 import LandingHero from "../../components/landing/hero";
+import LandingFeatures from "../../components/landing/features";
 
 export default function LandingDashboardPage() {
   return (
@@ -10,6 +11,7 @@ export default function LandingDashboardPage() {
       <LandingHeader />
       <main className="flex-1 max-w-5xl mx-auto px-6 py-16 flex flex-col items-center w-full">
         <LandingHero />
+        <LandingFeatures />
       </main>
       <LandingFooter />
     </div>
