@@ -44,7 +44,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen ml-0 md:ml-64">
+      <div className="flex-1 flex flex-col min-h-screen ml-0 md:ml">
         {/* Header */}
         <AdminHeader onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
