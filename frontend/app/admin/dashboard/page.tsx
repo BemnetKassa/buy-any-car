@@ -5,12 +5,17 @@ import { useRouter } from "next/navigation";
 import AdminSidebar from "../../components/admin/shared/sidebar";
 import AdminHeader from "../../components/admin/shared/header";
 
-export default function AdminDashboard() {
   const [model, setModel] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
-  const [cars, setCars] = useState<Array<{ model: string; price: string; image: string }>>([]);
+  const [type, setType] = useState("");
+  const [age, setAge] = useState("");
+  const [cars, setCars] = useState<Array<{ model: string; price: string; image: string; type?: string; age?: string }>>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [filterPrice, setFilterPrice] = useState<[number, number]>([0, 100000]);
+  const [filterAge, setFilterAge] = useState<[number, number]>([0, 30]);
   const router = useRouter();
 
   useEffect(() => {
@@ -25,7 +30,7 @@ export default function AdminDashboard() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newCar = { model, price, image };
+    const newCar = { model, price, image, type, age };
     const updatedCars = [...cars, newCar];
     setCars(updatedCars);
     if (typeof window !== "undefined") {
@@ -34,7 +39,25 @@ export default function AdminDashboard() {
     setModel("");
     setPrice("");
     setImage("");
+    setType("");
+    setAge("");
   };
+
+  // Filtering logic
+  const filteredCars = cars.filter(car => {
+    const matchesSearch =
+      search === "" ||
+      car.model.toLowerCase().includes(search.toLowerCase());
+    const matchesType =
+      !filterType || (car.type && car.type === filterType);
+    const priceNum = Number(car.price);
+    const matchesPrice =
+      priceNum >= filterPrice[0] && priceNum <= filterPrice[1];
+    const ageNum = Number(car.age || 0);
+    const matchesAge =
+      ageNum >= filterAge[0] && ageNum <= filterAge[1];
+    return matchesSearch && matchesType && matchesPrice && matchesAge;
+  });
 
   return (
     <div className="min-h-screen flex bg-gray-100 dark:bg-gray-900">
@@ -66,12 +89,42 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
+                  <label className="block text-gray-700 dark:text-gray-200 mb-1">Type</label>
+                  <select
+                    value={type}
+                    onChange={e => setType(e.target.value)}
+                    className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-gray-700 dark:text-white"
+                    required
+                  >
+                    <option value="">Select type</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Truck">Truck</option>
+                    <option value="Coupe">Coupe</option>
+                    <option value="Convertible">Convertible</option>
+                    <option value="Hatchback">Hatchback</option>
+                    <option value="Van">Van</option>
+                  </select>
+                </div>
+                <div>
                   <label className="block text-gray-700 dark:text-gray-200 mb-1">Price ($)</label>
                   <input
                     type="number"
                     value={price}
                     onChange={e => setPrice(e.target.value)}
                     className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-gray-700 dark:text-white"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 dark:text-gray-200 mb-1">Age (years)</label>
+                  <input
+                    type="number"
+                    value={age}
+                    onChange={e => setAge(e.target.value)}
+                    className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-gray-700 dark:text-white"
+                    min={0}
+                    max={30}
                     required
                   />
                 </div>
@@ -92,11 +145,77 @@ export default function AdminDashboard() {
             {/* Car List Card */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">Manage Cars</h2>
-              {cars.length === 0 ? (
-                <p className="text-gray-500 dark:text-gray-400">No cars added yet.</p>
+              {/* Search and Filters */}
+              <div className="mb-4 flex flex-col gap-4">
+                <input
+                  type="text"
+                  placeholder="Search by model..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-gray-700 dark:text-white"
+                />
+                <div className="flex flex-wrap gap-4">
+                  <select
+                    value={filterType}
+                    onChange={e => setFilterType(e.target.value)}
+                    className="px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="">All Types</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Truck">Truck</option>
+                    <option value="Coupe">Coupe</option>
+                    <option value="Convertible">Convertible</option>
+                    <option value="Hatchback">Hatchback</option>
+                    <option value="Van">Van</option>
+                  </select>
+                  <div className="flex items-center gap-2">
+                    <label className="text-gray-700 dark:text-gray-200">Price:</label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={100000}
+                      value={filterPrice[0]}
+                      onChange={e => setFilterPrice([Number(e.target.value), filterPrice[1]])}
+                      className="w-20 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
+                    />
+                    <span>-</span>
+                    <input
+                      type="number"
+                      min={0}
+                      max={100000}
+                      value={filterPrice[1]}
+                      onChange={e => setFilterPrice([filterPrice[0], Number(e.target.value)])}
+                      className="w-20 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="text-gray-700 dark:text-gray-200">Age:</label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={30}
+                      value={filterAge[0]}
+                      onChange={e => setFilterAge([Number(e.target.value), filterAge[1]])}
+                      className="w-16 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
+                    />
+                    <span>-</span>
+                    <input
+                      type="number"
+                      min={0}
+                      max={30}
+                      value={filterAge[1]}
+                      onChange={e => setFilterAge([filterAge[0], Number(e.target.value)])}
+                      className="w-16 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
+                    />
+                  </div>
+                </div>
+              </div>
+              {filteredCars.length === 0 ? (
+                <p className="text-gray-500 dark:text-gray-400">No cars found.</p>
               ) : (
                 <ul className="space-y-4">
-                  {cars.map((car, idx) => (
+                  {filteredCars.map((car, idx) => (
                     <li key={idx} className="flex items-center gap-4 bg-gray-100 dark:bg-gray-700 rounded p-3">
                       <div className="w-20 h-14 bg-gray-200 dark:bg-gray-600 flex items-center justify-center rounded overflow-hidden">
                         {car.image ? (
@@ -108,6 +227,7 @@ export default function AdminDashboard() {
                       <div className="flex-1">
                         <div className="font-semibold text-lg">{car.model}</div>
                         <div className="text-sm text-gray-600 dark:text-gray-300">${car.price}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{car.type} | {car.age} yrs</div>
                       </div>
                     </li>
                   ))}
