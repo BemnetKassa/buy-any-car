@@ -7,21 +7,21 @@ import LandingFeatures from "../../components/landing/features";
 
 export default function LandingDashboardPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 font-sans flex flex-col">
+    <div className="min-h-screen font-sans flex flex-col">
       <LandingHeader />
-      <main className="flex-1 max-w-5xl mx-auto px-6 py-16 flex flex-col items-center w-full">
-        <div className="w-full rounded-2xl shadow mb-10 relative overflow-hidden min-h-[400px]">
+      <main className="flex-1 w-full flex flex-col items-stretch">
+        <div className="w-full shadow overflow-hidden min-h-[400px]" style={{position: 'relative', margin: 0, borderRadius: 0}}>
           <img
-            src="/app/components/pictures/cars.jpg"
+            src="/cars.jpg"
             alt="Cars background"
             className="absolute inset-0 w-full h-full object-cover z-0"
-            style={{ filter: "brightness(0.5) blur(2px)" }}
+            style={{}}
           />
           <div className="relative z-10">
             <LandingHero />
           </div>
         </div>
-        <div className="w-full rounded-2xl shadow bg-blue-50 dark:bg-gray-900 p-8">
+        <div className="w-full shadow bg-blue-50 dark:bg-gray-900" style={{margin: 0, borderRadius: 0}}>
           <LandingFeatures />
         </div>
       </main>

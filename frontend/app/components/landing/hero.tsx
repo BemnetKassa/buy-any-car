@@ -7,7 +7,7 @@ export default function LandingHero() {
 				src="/app/components/pictures/cars.jpg"
 				alt="Cars background"
 				className="absolute inset-0 w-full h-full object-cover z-0"
-				style={{ filter: "brightness(0.5) blur(2px)" }}
+				style={{}}
 			/>
 			<div className="relative z-10 w-full flex flex-col items-center justify-center">
 				<h1 className="text-5xl md:text-6xl font-extrabold text-blue-100 dark:text-blue-200 mb-4 drop-shadow-lg">Find Your Next Car</h1>
