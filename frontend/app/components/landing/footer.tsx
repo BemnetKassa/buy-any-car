@@ -11,9 +11,9 @@ export default function LandingFooter() {
 					<a href="#" aria-label="Instagram" className="hover:text-pink-500 transition"><svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.974.974 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.974.974-2.242 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.974-.974-1.246-2.242-1.308-3.608C2.175 15.647 2.163 15.267 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608.974-.974 2.242-1.246 3.608-1.308C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.332.013 7.052.072 5.775.131 4.602.396 3.678 1.32c-.924.924-1.189 2.097-1.248 3.374C2.013 8.332 2 8.741 2 12c0 3.259.013 3.668.072 4.948.059 1.277.324 2.45 1.248 3.374.924.924 2.097 1.189 3.374 1.248C8.332 23.987 8.741 24 12 24c3.259 0 3.668-.013 4.948-.072 1.277-.059 2.45-.324 3.374-1.248.924-.924 1.189-2.097 1.248-3.374.059-1.28.072-1.689.072-4.948 0-3.259-.013-3.668-.072-4.948-.059-1.277-.324-2.45-1.248-3.374-.924-.924-2.097-1.189-3.374-1.248C15.668.013 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998zm6.406-11.845a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg></a>
 				</div>
 				<div className="flex gap-6">
-					<a href="#" className="hover:text-blue-700 transition">About</a>
-					<a href="#" className="hover:text-blue-700 transition">Contact</a>
-					<a href="#" className="hover:text-blue-700 transition">Privacy</a>
+					<a href="/landingPage/about" className="hover:text-blue-700 transition">About</a>
+					<a href="/landingPage/contact" className="hover:text-blue-700 transition">Contact</a>
+					<a href="/landingPage/privacy" className="hover:text-blue-700 transition">Privacy</a>
 				</div>
 			</div>
 			<div className="text-sm">
