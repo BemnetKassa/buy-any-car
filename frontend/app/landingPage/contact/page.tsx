@@ -10,6 +10,12 @@ export default function ContactPage() {
           <h1 className="text-3xl md:text-4xl font-extrabold text-blue-700 dark:text-blue-300 mb-4 tracking-tight">
             Contact Us
           </h1>
+          <a
+            href="/landingPage/dashboard"
+            className="inline-block mb-6 text-sm font-medium text-blue-700 dark:text-blue-300 hover:underline"
+          >
+            ← Back to dashboard
+          </a>
           <p className="text-gray-700 dark:text-gray-200 text-lg mb-6">
             Have a question, suggestion, or need support? We’d love to hear from you.
           </p>
