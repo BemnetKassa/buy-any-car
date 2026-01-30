@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import LandingHeader from "../../components/landing/header";
 import LandingFooter from "../../components/landing/footer";
 
+type Car = { model: string; price: string; image: string; type?: string; buildDate?: string };
+
 export default function BrowseCarsPage() {
-  const [cars, setCars] = useState<Array<{ model: string; price: string; image: string; type?: string; buildDate?: string }>>([]);
+  const [cars, setCars] = useState<Car[]>([]);
+  const [wishlist, setWishlist] = useState<Car[]>([]);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("");
   const [filterPrice, setFilterPrice] = useState<[number, number]>([0, 100000]);
@@ -12,10 +15,47 @@ export default function BrowseCarsPage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("cars");
-      setCars(stored ? JSON.parse(stored) : []);
+      const storedCars = localStorage.getItem("cars");
+      setCars(storedCars ? JSON.parse(storedCars) : []);
+
+      const storedWishlist = localStorage.getItem("wishlistCars");
+      setWishlist(storedWishlist ? JSON.parse(storedWishlist) : []);
     }
   }, []);
+
+  const isInWishlist = (car: Car) =>
+    wishlist.some(
+      item =>
+        item.model === car.model &&
+        item.price === car.price &&
+        item.image === car.image &&
+        item.type === car.type &&
+        item.buildDate === car.buildDate
+    );
+
+  const toggleWishlist = (car: Car) => {
+    setWishlist(prev => {
+      const exists = isInWishlist(car);
+      const next = exists
+        ? prev.filter(
+            item =>
+              !(
+                item.model === car.model &&
+                item.price === car.price &&
+                item.image === car.image &&
+                item.type === car.type &&
+                item.buildDate === car.buildDate
+              )
+          )
+        : [...prev, car];
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("wishlistCars", JSON.stringify(next));
+      }
+
+      return next;
+    });
+  };
 
   const filteredCars = cars.filter(car => {
     const matchesSearch =
@@ -134,6 +174,22 @@ export default function BrowseCarsPage() {
           ) : (
             filteredCars.map((car, idx) => (
               <div key={idx} className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 flex flex-col items-center border border-blue-100 dark:border-gray-800 hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 relative">
+                <button
+                  type="button"
+                  onClick={() => toggleWishlist(car)}
+                  className="absolute top-3 right-3 rounded-full p-2 bg-white/80 dark:bg-gray-800/80 shadow hover:scale-110 transition"
+                  aria-label={isInWishlist(car) ? "Remove from wishlist" : "Add to wishlist"}
+                >
+                  {isInWishlist(car) ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-red-500">
+                      <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 3 13.107 3 10.5 3 7.962 4.964 6 7.5 6A4.5 4.5 0 0112 8.1 4.5 4.5 0 0116.5 6C19.036 6 21 7.962 21 10.5c0 2.607-1.688 4.86-3.989 7.007a25.18 25.18 0 01-4.244 3.17 15.247 15.247 0 01-.383.218l-.022.012-.007.003-.003.002a.75.75 0 01-.682 0l-.003-.002z" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5 text-gray-400">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                    </svg>
+                  )}
+                </button>
                 {/* Category badge */}
                 {car.type && (
                   <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 shadow">

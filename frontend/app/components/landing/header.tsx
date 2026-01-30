@@ -10,6 +10,7 @@ export default function LandingHeader() {
 				</div>
 				<nav className="flex gap-4">
 					<a href="/landingPage/cars" className="px-4 py-2 rounded-lg text-blue-700 dark:text-blue-200 font-medium hover:bg-blue-50 dark:hover:bg-gray-800 hover:scale-105 transition-all duration-200">Cars</a>
+					<a href="/landingPage/wishlist" className="px-4 py-2 rounded-lg text-blue-700 dark:text-blue-200 font-medium hover:bg-blue-50 dark:hover:bg-gray-800 hover:scale-105 transition-all duration-200">Wishlist</a>
 					<a href="/admin" className="px-4 py-2 rounded-lg text-blue-700 dark:text-blue-200 font-medium hover:bg-blue-50 dark:hover:bg-gray-800 hover:scale-105 transition-all duration-200">Admin</a>
 				</nav>
 			</div>
