@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import LandingHeader from "../../components/landing/header";
 import LandingFooter from "../../components/landing/footer";
-
-type Car = { model: string; price: string; image: string; type?: string; buildDate?: string };
+import CarCard, { Car } from "../../components/landing/CarCard";
 
 export default function BrowseCarsPage() {
   const [cars, setCars] = useState<Car[]>([]);
@@ -73,153 +72,151 @@ export default function BrowseCarsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 to-blue-200 dark:from-gray-900 dark:to-gray-800 font-sans flex flex-col">
+    <div className="min-h-screen font-sans flex flex-col bg-gray-50 dark:bg-gray-950">
       <LandingHeader />
-      <main className="flex-1 max-w-5xl mx-auto px-6 py-16 flex flex-col items-center w-full">
-        <div className="w-full flex items-center justify-between mb-6">
-          <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white">Browse Cars</h2>
-          <a href="/landingPage/dashboard" className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-blue-600 text-blue-700 dark:text-blue-300 rounded-full font-semibold shadow hover:bg-blue-50 dark:hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
-            Dashboard
-          </a>
-        </div>
-        <div className="sticky top-0 z-10 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur rounded-lg shadow mb-8 flex flex-col md:flex-row md:items-end gap-4 p-6 border border-blue-100 dark:border-gray-800">
-          <div className="flex-1 flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Search by Model</label>
-            <input
-              type="text"
-              placeholder="e.g. Toyota Camry"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-          <div className="flex flex-col gap-2 min-w-[180px]">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Category</label>
-            <div className="relative">
-              <select
-                value={filterType}
-                onChange={e => setFilterType(e.target.value)}
-                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-gray-700 dark:text-white appearance-none pr-8"
-              >
-                <option value="">All Types</option>
-                <option value="Sedan">🚗 Sedan</option>
-                <option value="SUV">🚙 SUV</option>
-                <option value="Truck">🛻 Truck</option>
-                <option value="Coupe">🏎️ Coupe</option>
-                <option value="Convertible">🚘 Convertible</option>
-                <option value="Hatchback">🚕 Hatchback</option>
-                <option value="Van">🚐 Van</option>
-              </select>
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">▼</span>
+      
+      <main className="flex-1 w-full flex flex-col items-center">
+        {/* Page Header */}
+        <div className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-2">Browse Inventory</h1>
+              <p className="text-gray-500 dark:text-gray-400">Discover quality cars that match your lifestyle.</p>
             </div>
-          </div>
-          <div className="flex flex-col gap-2 min-w-[180px]">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Price ($)</label>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                min={0}
-                max={100000}
-                value={filterPrice[0]}
-                onChange={e => setFilterPrice([Number(e.target.value), filterPrice[1]])}
-                className="w-20 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
-              />
-              <span>-</span>
-              <input
-                type="number"
-                min={0}
-                max={100000}
-                value={filterPrice[1]}
-                onChange={e => setFilterPrice([filterPrice[0], Number(e.target.value)])}
-                className="w-20 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 min-w-[180px]">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Build Date</label>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                min={1990}
-                max={new Date().getFullYear()}
-                value={filterBuildDate[0]}
-                onChange={e => setFilterBuildDate([Number(e.target.value), filterBuildDate[1]])}
-                className="w-24 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
-              />
-              <span>-</span>
-              <input
-                type="number"
-                min={1990}
-                max={new Date().getFullYear()}
-                value={filterBuildDate[1]}
-                onChange={e => setFilterBuildDate([filterBuildDate[0], Number(e.target.value)])}
-                className="w-24 px-2 py-1 border rounded dark:bg-gray-700 dark:text-white"
-              />
-            </div>
+            <a href="/landingPage/dashboard" className="self-start md:self-center inline-flex items-center px-4 py-2 border border-blue-600 rounded-lg text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors font-medium text-sm">
+               ← Back to Dashboard
+            </a>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full">
-          {filteredCars.length === 0 ? (
-            <div className="col-span-full flex flex-col items-center justify-center py-16">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48" className="w-16 h-16 text-blue-200 dark:text-gray-700 mb-4">
-                <rect width="48" height="48" rx="12" fill="currentColor" />
-                <path d="M16 32h16M20 20h8m-4 0v8" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              <div className="text-lg text-gray-500 dark:text-gray-400 mb-2">No cars available yet.</div>
-              <div className="text-sm text-gray-400 dark:text-gray-600">Check back soon or contact us to list your car!</div>
-            </div>
-          ) : (
-            filteredCars.map((car, idx) => (
-              <div key={idx} className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 flex flex-col items-center border border-blue-100 dark:border-gray-800 hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 relative">
-                <button
-                  type="button"
-                  onClick={() => toggleWishlist(car)}
-                  className="absolute top-3 right-3 rounded-full p-2 bg-white/80 dark:bg-gray-800/80 shadow hover:scale-110 transition"
-                  aria-label={isInWishlist(car) ? "Remove from wishlist" : "Add to wishlist"}
-                >
-                  {isInWishlist(car) ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-red-500">
-                      <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 3 13.107 3 10.5 3 7.962 4.964 6 7.5 6A4.5 4.5 0 0112 8.1 4.5 4.5 0 0116.5 6C19.036 6 21 7.962 21 10.5c0 2.607-1.688 4.86-3.989 7.007a25.18 25.18 0 01-4.244 3.17 15.247 15.247 0 01-.383.218l-.022.012-.007.003-.003.002a.75.75 0 01-.682 0l-.003-.002z" />
-                    </svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5 text-gray-400">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg>
-                  )}
-                </button>
-                {/* Category badge */}
-                {car.type && (
-                  <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 shadow">
-                    {car.type === 'Sedan' && '🚗 Sedan'}
-                    {car.type === 'SUV' && '🚙 SUV'}
-                    {car.type === 'Truck' && '🛻 Truck'}
-                    {car.type === 'Coupe' && '🏎️ Coupe'}
-                    {car.type === 'Convertible' && '🚘 Convertible'}
-                    {car.type === 'Hatchback' && '🚕 Hatchback'}
-                    {car.type === 'Van' && '🚐 Van'}
-                  </span>
-                )}
-                <div className="w-full h-40 bg-gray-200 dark:bg-gray-700 rounded mb-4 flex items-center justify-center overflow-hidden">
-                  {car.image ? (
-                    <img src={car.image} alt={car.model} className="object-cover h-full w-full" />
-                  ) : (
-                    <span className="text-gray-400 dark:text-gray-500">Car Image</span>
-                  )}
-                </div>
-                <h4 className="text-lg font-bold mb-2 text-blue-700 dark:text-blue-300 tracking-wide">{car.model}</h4>
-                <p className="text-gray-600 dark:text-gray-300 mb-2 text-base font-semibold">${car.price}</p>
-                <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-2">
-                  {car.buildDate && (
-                    <span className="inline-flex items-center gap-1"><svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>Built: {car.buildDate}</span>
-                  )}
-                </div>
-                <button className="mt-auto px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full font-semibold shadow hover:from-blue-600 hover:to-blue-800 transition">View Details</button>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            
+            {/* Sidebar Filters */}
+            <aside className="w-full lg:w-72 bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 sticky top-24">
+              <div className="flex items-center gap-2 mb-6">
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                <h2 className="font-bold text-lg text-gray-900 dark:text-white">Filters</h2>
               </div>
-            ))
-          )}
+              
+              <div className="space-y-6">
+                {/* Search */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Search</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search model..."
+                      value={search}
+                      onChange={e => setSearch(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+                    />
+                    <svg className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                  </div>
+                </div>
+
+                {/* Category */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Body Type</label>
+                  <div className="relative">
+                    <select
+                      value={filterType}
+                      onChange={e => setFilterType(e.target.value)}
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none dark:text-white"
+                    >
+                      <option value="">All Types</option>
+                      <option value="Sedan">Sedan</option>
+                      <option value="SUV">SUV</option>
+                      <option value="Truck">Truck</option>
+                      <option value="Coupe">Coupe</option>
+                      <option value="Convertible">Convertible</option>
+                      <option value="Hatchback">Hatchback</option>
+                      <option value="Van">Van</option>
+                    </select>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 text-xs">▼</div>
+                  </div>
+                </div>
+
+                {/* Price Range */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Price Range
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
+                      <input
+                        type="number"
+                        min={0}
+                        value={filterPrice[0]}
+                        onChange={e => setFilterPrice([Number(e.target.value), filterPrice[1]])}
+                        className="w-full pl-5 pr-2 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+                      />
+                    </div>
+                    <span className="text-gray-400">-</span>
+                    <div className="relative flex-1">
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
+                      <input
+                        type="number"
+                        min={0}
+                        value={filterPrice[1]}
+                        onChange={e => setFilterPrice([filterPrice[0], Number(e.target.value)])}
+                        className="w-full pl-5 pr-2 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Year Range */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Build Year</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min={1990}
+                      value={filterBuildDate[0]}
+                      onChange={e => setFilterBuildDate([Number(e.target.value), filterBuildDate[1]])}
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+                      placeholder="Min"
+                    />
+                    <span className="text-gray-400">-</span>
+                    <input
+                      type="number"
+                      max={new Date().getFullYear()}
+                      value={filterBuildDate[1]}
+                      onChange={e => setFilterBuildDate([filterBuildDate[0], Number(e.target.value)])}
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+                      placeholder="Max"
+                    />
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            {/* Results Grid */}
+            <div className="flex-1">
+              {filteredCars.length === 0 ? (
+                <div className="bg-white dark:bg-gray-900 rounded-2xl p-12 text-center border border-gray-200 dark:border-gray-800 shadow-sm">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500 mb-4">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No cars found</h3>
+                  <p className="text-gray-500 dark:text-gray-400">Try adjusting your filters or search criteria.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {filteredCars.map((car, idx) => (
+                    <CarCard 
+                      key={idx} 
+                      car={car} 
+                      isInWishlist={isInWishlist(car)} 
+                      onToggleWishlist={toggleWishlist} 
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </main>
       <LandingFooter />
