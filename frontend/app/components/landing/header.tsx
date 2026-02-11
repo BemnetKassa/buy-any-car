@@ -1,19 +1,31 @@
 "use client";
 
+import { useState } from "react";
+
 export default function LandingHeader() {
+	const [menuOpen, setMenuOpen] = useState(false);
 	return (
 		<header className="w-full py-4 bg-white/90 dark:bg-gray-950/90 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 transition-all">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-				<div className="flex items-center gap-2 md:gap-3">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between">
+				<div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
 					<div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-md">
 						B
 					</div>
 					<h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">BuyAnyCar</h1>
+					<button
+						className="sm:hidden ml-auto p-2 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+						onClick={() => setMenuOpen(!menuOpen)}
+						aria-label="Toggle navigation menu"
+					>
+						<svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+						</svg>
+					</button>
 				</div>
-				<nav className="flex items-center gap-1 md:gap-2">
+				<nav className={`flex-col sm:flex-row flex sm:flex items-center gap-1 md:gap-2 w-full sm:w-auto ${menuOpen ? 'flex' : 'hidden sm:flex'} mt-4 sm:mt-0`}>
 					<a href="/landingPage/cars" className="px-3 py-2 md:px-4 md:py-2 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all">Browse Cars</a>
 					<a href="/landingPage/wishlist" className="px-3 py-2 md:px-4 md:py-2 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all">Wishlist</a>
-					<a href="/admin" className="ml-2 px-4 py-2 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium hover:opacity-90 transition-all shadow-sm">Admin Access</a>
+					<a href="/admin" className="ml-0 sm:ml-2 px-4 py-2 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium hover:opacity-90 transition-all shadow-sm">Admin Access</a>
 				</nav>
 			</div>
 		</header>
