@@ -12,11 +12,14 @@ export default function LandingDashboardPage() {
       <main className="flex-1 w-full flex flex-col">
         {/* Hero Section with Background */}
         <div className="relative w-full min-h-[600px] flex items-center justify-center overflow-hidden">
-          {/* Background Image */}
+          {/* Background Video */}
           <div className="absolute inset-0 z-0">
-             <img
-              src="/cars.jpg"
-              alt="Luxury Cars"
+             <video
+              src="/cars.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
               className="w-full h-full object-cover"
             />
             {/* Overlay for text readability */}
