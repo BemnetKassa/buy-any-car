@@ -23,7 +23,7 @@ export default function LandingDashboardPage() {
               className="w-full h-full object-cover"
             />
             {/* Overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/60 to-black/80" />
           </div>
           
           {/* Hero Content */}
