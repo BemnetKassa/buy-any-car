@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ICar extends Document {
-  model: string;
+  carModel: string;
   price: number;
   image: string;
   type: string;
@@ -10,7 +10,7 @@ export interface ICar extends Document {
 }
 
 const CarSchema: Schema = new Schema({
-  model: { type: String, required: true },
+  carModel: { type: String, required: true },
   price: { type: Number, required: true },
   image: { type: String, required: true },
   type: { type: String, required: true, enum: ['SUV', 'Sedan', 'Sport', 'Truck', 'Coupe', 'Convertible'] },

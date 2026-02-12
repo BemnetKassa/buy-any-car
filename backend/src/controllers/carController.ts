@@ -8,7 +8,7 @@ export const getCars = async (req: Request, res: Response) => {
     let query: any = {};
 
     if (search) {
-      query.model = { $regex: search, $options: 'i' };
+      query.carModel = { $regex: search, $options: 'i' };
     }
     if (type && type !== 'All') {
       query.type = type;
@@ -33,11 +33,11 @@ export const getCars = async (req: Request, res: Response) => {
 
 export const addCar = async (req: Request, res: Response) => {
   try {
-    const { model, price, image, type, buildDate } = req.body;
-    if (!model || !price || !image || !type) {
-      return res.status(400).json({ error: 'Model, price, image, and type are required.' });
+    const { carModel, price, image, type, buildDate } = req.body;
+    if (!carModel || !price || !image || !type) {
+      return res.status(400).json({ error: 'Car model, price, image, and type are required.' });
     }
-    const newCar = await Car.create({ model, price, image, type, buildDate });
+    const newCar = await Car.create({ carModel, price, image, type, buildDate });
     res.status(201).json(newCar);
   } catch (error) {
     res.status(500).json({ error: 'Server Error' });
