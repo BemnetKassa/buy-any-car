@@ -1,57 +1,67 @@
 import { Request, Response } from 'express';
-import { Car } from '../models/Car';
-import { v4 as uuidv4 } from 'uuid';
+import Car from '../models/Car';
 
-let cars: Car[] = [];
+export const getCars = async (req: Request, res: Response) => {
+  try {
+    const { search, type, minPrice, maxPrice, minYear, maxYear } = req.query;
+    
+    let query: any = {};
 
-export const getCars = (req: Request, res: Response) => {
-  // Filtering logic
-  let filtered = [...cars];
-  const { search, type, minPrice, maxPrice, minBuildDate, maxBuildDate } = req.query;
+    if (search) {
+      query.model = { $regex: search, $options: 'i' };
+    }
+    if (type && type !== 'All') {
+      query.type = type;
+    }
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+    if (minYear || maxYear) {
+      query.buildDate = {};
+      if (minYear) query.buildDate.$gte = Number(minYear);
+      if (maxYear) query.buildDate.$lte = Number(maxYear);
+    }
 
-  if (search) {
-    filtered = filtered.filter(car => car.model.toLowerCase().includes((search as string).toLowerCase()));
+    const cars = await Car.find(query).sort({ created_at: -1 });
+    res.json(cars);
+  } catch (error) {
+    res.status(500).json({ error: 'Server Error' });
   }
-  if (type) {
-    filtered = filtered.filter(car => car.type === type);
-  }
-  if (minPrice || maxPrice) {
-    filtered = filtered.filter(car => {
-      const price = Number(car.price);
-      return (!minPrice || price >= Number(minPrice)) && (!maxPrice || price <= Number(maxPrice));
-    });
-  }
-  if (minBuildDate || maxBuildDate) {
-    filtered = filtered.filter(car => {
-      const buildDate = Number(car.buildDate || 0);
-      return (!minBuildDate || buildDate >= Number(minBuildDate)) && (!maxBuildDate || buildDate <= Number(maxBuildDate));
-    });
-  }
-  res.json(filtered);
 };
 
-export const addCar = (req: Request, res: Response) => {
-  const { model, price, image, type, buildDate } = req.body;
-  if (!model || !price || !image) {
-    return res.status(400).json({ error: 'Model, price, and image are required.' });
+export const addCar = async (req: Request, res: Response) => {
+  try {
+    const { model, price, image, type, buildDate } = req.body;
+    if (!model || !price || !image || !type) {
+      return res.status(400).json({ error: 'Model, price, image, and type are required.' });
+    }
+    const newCar = await Car.create({ model, price, image, type, buildDate });
+    res.status(201).json(newCar);
+  } catch (error) {
+    res.status(500).json({ error: 'Server Error' });
   }
-  const newCar: Car = { id: uuidv4(), model, price, image, type, buildDate };
-  cars.push(newCar);
-  res.status(201).json(newCar);
 };
 
-export const deleteCar = (req: Request, res: Response) => {
-  const { id } = req.params;
-  const idx = cars.findIndex(car => car.id === id);
-  if (idx === -1) return res.status(404).json({ error: 'Car not found' });
-  cars.splice(idx, 1);
-  res.status(204).send();
+export const deleteCar = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Car.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ error: 'Car not found' });
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Server Error' });
+  }
 };
 
-export const updateCar = (req: Request, res: Response) => {
-  const { id } = req.params;
-  const idx = cars.findIndex(car => car.id === id);
-  if (idx === -1) return res.status(404).json({ error: 'Car not found' });
-  cars[idx] = { ...cars[idx], ...req.body };
-  res.json(cars[idx]);
+export const updateCar = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const updated = await Car.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updated) return res.status(404).json({ error: 'Car not found' });
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: 'Server Error' });
+  }
 };
