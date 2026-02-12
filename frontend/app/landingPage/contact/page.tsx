@@ -33,7 +33,7 @@ export default function ContactPage() {
               backgroundSize: "cover" 
             }} 
           >
-             <div className="absolute inset-0 bg-blue-900/80 dark:bg-black/80 backdrop-blur-sm"></div>
+             <div className="absolute inset-0 bg-blue-900/80 dark:bg-black/60 backdrop-blur-sm"></div>
           </div>
 
           <div className="relative z-10 max-w-3xl mx-auto">

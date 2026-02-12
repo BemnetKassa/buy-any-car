@@ -32,15 +32,44 @@ export default function AboutPage() {
           </div>
 
           {/* Video Section */}
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-800 order-1 lg:order-2 transform transition-transform hover:scale-[1.02] duration-500">
-            <video 
-                src="/cars.mp4" 
-                controls 
-                autoPlay 
-                muted 
-                loop 
-                className="w-full h-auto object-cover bg-gray-900"
-            />
+          <div className="relative order-1 lg:order-2 perspective-1000">
+            {/* Decorative Glow */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl opacity-30 blur-2xl animate-pulse"></div>
+            
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/20 dark:border-gray-700 bg-gray-900 group transform transition-all duration-500 hover:rotate-1 hover:shadow-blue-500/20">
+                <video 
+                    src="/cars.mp4" 
+                    autoPlay 
+                    muted 
+                    loop 
+                    playsInline
+                    className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110"
+                />
+                
+                {/* Overlay Gradient */}
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+                
+                {/* Showcase Badge/Text */}
+                <div className="absolute bottom-6 left-6 pointer-events-none text-left z-10 transition-transform duration-500 group-hover:translate-x-2">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-white/20 backdrop-blur-md text-white border border-white/30 uppercase tracking-wider mb-2 ring-1 ring-black/5">
+                        <span className="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></span>
+                        Live Preview
+                    </span>
+                    <h3 className="text-white text-2xl font-bold drop-shadow-lg">Experience Excellence</h3>
+                    <p className="text-gray-200 text-sm mt-1 max-w-xs drop-shadow-md hidden sm:block">
+                        Discover the quality and care put into every vehicle in our collection.
+                    </p>
+                </div>
+
+                {/* Play Button Overlay (Decorative since it's autoplay) */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                     <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/40 shadow-lg transform scale-0 group-hover:scale-100 transition-transform duration-500">
+                        <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                     </div>
+                </div>
+            </div>
           </div>
         </div>
       </main>
