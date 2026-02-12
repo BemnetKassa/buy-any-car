@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import LandingHeader from "../../components/landing/header";
 import LandingFooter from "../../components/landing/footer";
-import CarCard, { Car } from "../../components/landing/CarCard";
+import CarCard from "../../components/landing/CarCard";
+import { fetchCars, Car } from "../../utils/api";
 
 export default function BrowseCarsPage() {
   const [cars, setCars] = useState<Car[]>([]);
@@ -13,38 +14,38 @@ export default function BrowseCarsPage() {
   const [filterBuildDate, setFilterBuildDate] = useState<[number, number]>([1990, new Date().getFullYear()]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedCars = localStorage.getItem("cars");
-      setCars(storedCars ? JSON.parse(storedCars) : []);
+    const loadCars = async () => {
+      try {
+        const data = await fetchCars();
+        setCars(data);
+      } catch (err) {
+        console.error("Failed to load cars", err);
+      }
+    };
+    loadCars();
 
+    if (typeof window !== "undefined") {
       const storedWishlist = localStorage.getItem("wishlistCars");
-      setWishlist(storedWishlist ? JSON.parse(storedWishlist) : []);
+      try {
+        setWishlist(storedWishlist ? JSON.parse(storedWishlist) : []);
+      } catch (e) {
+        setWishlist([]);
+      }
     }
   }, []);
 
   const isInWishlist = (car: Car) =>
-    wishlist.some(
-      item =>
-        item.model === car.model &&
-        item.price === car.price &&
-        item.image === car.image &&
-        item.type === car.type &&
-        item.buildDate === car.buildDate
+    wishlist.some(item => 
+      (item._id && car._id && item._id === car._id) || 
+      (!item._id && !car._id && item.carModel === car.carModel) // Fallback for items without ID
     );
 
   const toggleWishlist = (car: Car) => {
     setWishlist(prev => {
       const exists = isInWishlist(car);
       const next = exists
-        ? prev.filter(
-            item =>
-              !(
-                item.model === car.model &&
-                item.price === car.price &&
-                item.image === car.image &&
-                item.type === car.type &&
-                item.buildDate === car.buildDate
-              )
+        ? prev.filter(item => 
+            (item._id && car._id ? item._id !== car._id : item.carModel !== car.carModel)
           )
         : [...prev, car];
 
@@ -59,12 +60,11 @@ export default function BrowseCarsPage() {
   const filteredCars = cars.filter(car => {
     const matchesSearch =
       search === "" ||
-      car.model.toLowerCase().includes(search.toLowerCase());
+      car.carModel.toLowerCase().includes(search.toLowerCase());
     const matchesType =
       !filterType || (car.type && car.type === filterType);
-    const priceNum = Number(car.price);
     const matchesPrice =
-      priceNum >= filterPrice[0] && priceNum <= filterPrice[1];
+      car.price >= filterPrice[0] && car.price <= filterPrice[1];
     const buildDateNum = Number(car.buildDate || 0);
     const matchesBuildDate =
       buildDateNum >= filterBuildDate[0] && buildDateNum <= filterBuildDate[1];
@@ -207,7 +207,7 @@ export default function BrowseCarsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {filteredCars.map((car, idx) => (
                     <CarCard 
-                      key={idx} 
+                      key={car._id || idx} 
                       car={car} 
                       isInWishlist={isInWishlist(car)} 
                       onToggleWishlist={toggleWishlist} 
