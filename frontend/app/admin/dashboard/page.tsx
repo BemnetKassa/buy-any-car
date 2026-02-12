@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AdminSidebar from "../../components/admin/shared/sidebar";
 import AdminHeader from "../../components/admin/shared/header";
+import { fetchCars, createCar, deleteCarApi, Car } from "../../utils/api";
 
 export default function AdminDashboardPage() {
   const [model, setModel] = useState("");
@@ -11,7 +12,7 @@ export default function AdminDashboardPage() {
   const [image, setImage] = useState("");
   const [type, setType] = useState("");
   const [buildDate, setBuildDate] = useState("");
-  const [cars, setCars] = useState<Array<{ model: string; price: string; image: string; type?: string; buildDate?: string }>>([]);
+  const [cars, setCars] = useState<Car[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("");
@@ -23,34 +24,59 @@ export default function AdminDashboardPage() {
     if (typeof window !== "undefined" && localStorage.getItem("admin-auth") !== "true") {
       router.push("/admin/auth");
     }
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("cars");
-      setCars(stored ? JSON.parse(stored) : []);
-    }
+    
+    // Load cars from API
+    loadCars();
   }, [router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newCar = { model, price, image, type, buildDate };
-    const updatedCars = [...cars, newCar];
-    setCars(updatedCars);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("cars", JSON.stringify(updatedCars));
+  const loadCars = async () => {
+    try {
+      const data = await fetchCars();
+      setCars(data);
+    } catch (err) {
+      console.error("Failed to load cars", err);
+      alert("Failed to load cars. Check console.");
     }
-    setModel("");
-    setPrice("");
-    setImage("");
-    setType("");
-    setBuildDate("");
-    alert("Car added successfully!");
   };
 
-  const deleteCar = (indexToDelete: number) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const newCar = { 
+        carModel: model, 
+        price: Number(price), 
+        image, 
+        type, 
+        buildDate 
+      };
+      
+      await createCar(newCar);
+      alert("Car added successfully!");
+      
+      // Reset form
+      setModel("");
+      setPrice("");
+      setImage("");
+      setType("");
+      setBuildDate("");
+      
+      // Refresh list
+      loadCars();
+    } catch (err) {
+      console.error("Failed to create car", err);
+      alert("Error adding car. See console.");
+    }
+  };
+
+  const deleteCar = async (id: string) => {
     if(confirm("Are you sure you want to delete this car?")) {
-        const updatedCars = cars.filter((_, idx) => idx !== indexToDelete);
-        setCars(updatedCars);
-        if (typeof window !== "undefined") {
-        localStorage.setItem("cars", JSON.stringify(updatedCars));
+        try {
+          await deleteCarApi(id);
+          // Optimistic update or refresh
+          setCars(prev => prev.filter(c => c._id !== id));
+        } catch (err) {
+          console.error("Failed to delete car", err);
+          alert("Error deleting car.");
         }
     }
   };
@@ -59,19 +85,18 @@ export default function AdminDashboardPage() {
   const filteredCars = cars.filter(car => {
     const matchesSearch =
       search === "" ||
-      car.model.toLowerCase().includes(search.toLowerCase());
+      car.carModel.toLowerCase().includes(search.toLowerCase());
     const matchesType =
       !filterType || (car.type && car.type === filterType);
-    const priceNum = Number(car.price);
     const matchesPrice =
-      priceNum >= filterPrice[0] && priceNum <= filterPrice[1];
+      car.price >= filterPrice[0] && car.price <= filterPrice[1];
     const buildDateNum = Number(car.buildDate || 0);
     const matchesBuildDate =
       buildDateNum >= filterBuildDate[0] && buildDateNum <= filterBuildDate[1];
     return matchesSearch && matchesType && matchesPrice && matchesBuildDate;
   });
 
-  const totalValue = cars.reduce((acc, car) => acc + Number(car.price || 0), 0);
+  const totalValue = cars.reduce((acc, car) => acc + (car.price || 0), 0);
 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -267,18 +292,18 @@ export default function AdminDashboardPage() {
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
                       {filteredCars.map((car, idx) => (
-                        <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                        <tr key={car._id || idx} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                           <td className="px-4 py-3">
                             <div className="w-16 h-10 rounded overflow-hidden bg-gray-200 relative">
                                 {car.image ? (
-                                    <img src={car.image} alt={car.model} className="w-full h-full object-cover" />
+                                    <img src={car.image} alt={car.carModel} className="w-full h-full object-cover" />
                                 ) : (
                                     <span className="text-[10px] text-gray-500 absolute inset-0 flex items-center justify-center">No Img</span>
                                 )}
                             </div>
                           </td>
                           <td className="px-4 py-3">
-                              <span className="font-medium text-gray-900 dark:text-white">{car.model}</span>
+                              <span className="font-medium text-gray-900 dark:text-white">{car.carModel}</span>
                           </td>
                           <td className="px-4 py-3">
                               <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
@@ -286,14 +311,14 @@ export default function AdminDashboardPage() {
                               </span>
                           </td>
                           <td className="px-4 py-3 text-gray-600 dark:text-gray-300 font-medium">
-                              ${Number(car.price).toLocaleString()}
+                              ${car.price.toLocaleString()}
                           </td>
                           <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
                               {car.buildDate || 'N/A'}
                           </td>
                           <td className="px-4 py-3 text-right">
                               <button 
-                                onClick={() => deleteCar(idx)}
+                                onClick={() => car._id && deleteCar(car._id)}
                                 className="text-red-600 hover:text-red-900 dark:hover:text-red-400 p-1 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
                                 title="Delete Car"
                               >

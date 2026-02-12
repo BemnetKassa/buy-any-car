@@ -32,3 +32,18 @@ export const deleteCarApi = async (id: string) => {
   });
   if (!res.ok) throw new Error("Failed to delete car");
 };
+
+export const loginAdmin = async (credentials: { username: string; password: string }) => {
+  const res = await fetch(`${API_URL}/admin/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
+  
+  const data = await res.json();
+  
+  if (!res.ok) {
+     throw new Error(data.error || "Login failed");
+  }
+  return data;
+};

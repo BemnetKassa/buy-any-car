@@ -1,7 +1,8 @@
 
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { loginAdmin } from "../../utils/api";
 
 export default function AdminLogin() {
   const [username, setUsername] = useState("");
@@ -9,33 +10,22 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  // Seed mock admin user in localStorage (run once)
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const users = localStorage.getItem("admin-users");
-      if (!users) {
-        localStorage.setItem("admin-users", JSON.stringify([
-          { username: "admin", password: "admin123" }
-        ]));
-      }
-    }
-  }, []);
-
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(""); // Clear previous errors
+    
     if (username && password) {
-      let users = [];
-      if (typeof window !== "undefined") {
-        const stored = localStorage.getItem("admin-users");
-        users = stored ? JSON.parse(stored) : [];
-      }
-      const found = users.find((u: any) => u.username === username && u.password === password);
-      if (found) {
+      try {
+        const data = await loginAdmin({ username, password });
+        
+        // Store auth details
         localStorage.setItem("admin-auth", "true");
-        localStorage.setItem("admin-username", username);
+        localStorage.setItem("admin-token", data.token);
+        localStorage.setItem("admin-username", data.username);
+        
         router.push("/admin/dashboard");
-      } else {
-        setError("Invalid username or password");
+      } catch (err: any) {
+        setError(err.message || "Invalid username or password");
       }
     } else {
       setError("Please enter a username and password");

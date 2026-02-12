@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import LandingHeader from "../../components/landing/header";
 import LandingFooter from "../../components/landing/footer";
-import CarCard, { Car } from "../../components/landing/CarCard";
+import CarCard from "../../components/landing/CarCard";
+import { Car } from "../../utils/api";
 
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState<Car[]>([]);
@@ -11,21 +12,19 @@ export default function WishlistPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedWishlist = localStorage.getItem("wishlistCars");
-      setWishlist(storedWishlist ? JSON.parse(storedWishlist) : []);
+      try {
+        setWishlist(storedWishlist ? JSON.parse(storedWishlist) : []);
+      } catch (e) {
+        setWishlist([]);
+      }
     }
   }, []);
 
   const removeFromWishlist = (car: Car) => {
     setWishlist((prev) => {
       const next = prev.filter(
-        (item) =>
-          !(
-            item.model === car.model &&
-            item.price === car.price &&
-            item.image === car.image &&
-            item.type === car.type &&
-            item.buildDate === car.buildDate
-          )
+        (item) => 
+            (item._id && car._id ? item._id !== car._id : item.carModel !== car.carModel)
       );
       if (typeof window !== "undefined") {
         localStorage.setItem("wishlistCars", JSON.stringify(next));
@@ -73,7 +72,7 @@ export default function WishlistPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {wishlist.map((car, idx) => (
                 <CarCard 
-                  key={idx} 
+                  key={car._id || idx} 
                   car={car} 
                   isInWishlist={true} 
                   onToggleWishlist={() => removeFromWishlist(car)} 
