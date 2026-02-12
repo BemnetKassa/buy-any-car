@@ -13,14 +13,14 @@ const AdminUserSchema: Schema = new Schema({
 }, { timestamps: true });
 
 // Hash password before saving
-AdminUserSchema.pre<IAdminUser>('save', async function (next) {
-  if (!this.isModified('password')) return next();
+AdminUserSchema.pre('save', async function () {
+  const user = this as unknown as IAdminUser;
+  if (!user.isModified('password')) return;
   try {
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
+    user.password = await bcrypt.hash(user.password, salt);
   } catch (err: any) {
-    next(err);
+    throw err;
   }
 });
 

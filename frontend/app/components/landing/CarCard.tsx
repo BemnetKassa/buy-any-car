@@ -1,14 +1,6 @@
 "use client";
 
-import { useState } from "react";
-
-export type Car = { 
-  model: string; 
-  price: string; 
-  image: string; 
-  type?: string; 
-  buildDate?: string 
-};
+import { Car } from "../../utils/api";
 
 interface CarCardProps {
   car: Car;
@@ -53,7 +45,7 @@ export default function CarCard({ car, isInWishlist, onToggleWishlist }: CarCard
         {car.image ? (
           <img 
             src={car.image} 
-            alt={car.model} 
+            alt={car.carModel} 
             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" 
           />
         ) : (
@@ -66,11 +58,11 @@ export default function CarCard({ car, isInWishlist, onToggleWishlist }: CarCard
       {/* Content */}
       <div className="p-5 flex flex-col flex-1">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-1" title={car.model}>
-            {car.model}
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-1" title={car.carModel}>
+            {car.carModel}
           </h3>
           <p className="text-lg font-bold text-blue-600 dark:text-blue-400 shrink-0 ml-2">
-            ${parseInt(car.price).toLocaleString()}
+            ${car.price.toLocaleString()}
           </p>
         </div>
 

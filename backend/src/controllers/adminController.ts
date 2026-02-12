@@ -19,7 +19,7 @@ export const login = async (req: Request, res: Response) => {
       res.json({
         _id: user._id,
         username: user.username,
-        token: generateToken(user._id as string),
+        token: generateToken(user._id as unknown as string),
       });
     } else {
       res.status(401).json({ error: 'Invalid email or password' });
@@ -48,7 +48,7 @@ export const register = async (req: Request, res: Response) => {
         res.status(201).json({
           _id: user._id,
           username: user.username,
-          token: generateToken(user._id as string),
+          token: generateToken(user._id as unknown as string),
         });
       } else {
         res.status(400).json({ error: 'Invalid user data' });
