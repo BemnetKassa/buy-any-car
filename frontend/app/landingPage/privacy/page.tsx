@@ -20,7 +20,7 @@ export default function PrivacyPage() {
               backgroundSize: "cover" 
             }} 
           >
-             <div className="absolute inset-0 bg-blue-900/90 dark:bg-black/90 backdrop-blur-sm"></div>
+             <div className="absolute inset-0 bg-blue-900/90 dark:bg-black/80 backdrop-blur-sm"></div>
           </div>
 
           <div className="relative z-10 max-w-4xl mx-auto">
