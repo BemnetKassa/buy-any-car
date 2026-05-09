@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+
+  savedCars SavedCar[]
+  sessions  Session[]
+}
+
+model Cars {
+  id          Int     @id @default(autoincrement())
+  make        String
+  model       String
+  year        Int
+  price       Float
+  mileage     Int
+  description String?
+
+  savedByUsers SavedCar[]
+}
+
+model SavedCar {
+  id     Int @id @default(autoincrement())
+  userId Int
+  carId  Int
+
+  user User @relation(fields: [userId], references: [id])
+  car  Cars @relation(fields: [carId], references: [id])
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
